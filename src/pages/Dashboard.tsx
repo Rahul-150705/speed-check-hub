@@ -3,9 +3,9 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 export default function Dashboard({ speed }: any) {
   if (!speed) {
     return (
-      <div className="flex flex-col items-center justify-center mt-40 text-gray-700">
+      <div className="flex flex-col items-center justify-center mt-32 text-gray-600">
         <h2 className="text-3xl font-semibold">No Data Yet</h2>
-        <p className="text-lg mt-2">Run a speed test from Home first.</p>
+        <p className="text-lg mt-2">Run a speed test first from Home page</p>
       </div>
     );
   }
@@ -17,26 +17,18 @@ export default function Dashboard({ speed }: any) {
   ];
 
   return (
-    <div className="mt-32 text-center px-8">
-      <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-8">
-        Dashboard
-      </h1>
-      <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-10 w-full max-w-6xl mx-auto">
-        <ResponsiveContainer width="100%" height={450}>
-          <BarChart data={data} margin={{ top: 30, right: 50, left: 20, bottom: 20 }} barSize={150}>
+    <div className="mt-32 text-center">
+      <h1 className="text-4xl font-bold text-gray-800 mb-6">Speed Dashboard</h1>
+      <div className="bg-white rounded-3xl shadow-xl p-10 w-full max-w-5xl mx-auto">
+        <ResponsiveContainer width="100%" height={400}>
+          <BarChart data={data} margin={{ top: 30, right: 50, left: 20, bottom: 20 }} barSize={120}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="name" tick={{ fontSize: 18, fontWeight: 600 }} />
+            <XAxis dataKey="name" tick={{ fontSize: 16, fontWeight: 600 }} />
             <YAxis />
-            <Tooltip
-              contentStyle={{ backgroundColor: "rgba(255,255,255,0.9)", borderRadius: "10px" }}
-            />
-            <Bar dataKey="value" radius={[15, 15, 0, 0]}>
+            <Tooltip />
+            <Bar dataKey="value" radius={[10, 10, 0, 0]}>
               {data.map((entry, index) => (
-                <Cell
-                  key={index}
-                  fill={entry.color}
-                  className="transition-all duration-300 hover:opacity-80 hover:cursor-pointer"
-                />
+                <Cell key={index} fill={entry.color} />
               ))}
             </Bar>
           </BarChart>
