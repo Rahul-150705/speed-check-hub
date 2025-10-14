@@ -59,7 +59,7 @@ export default function SignUp() {
       value={formData.password}
       onChange={handleChange}
       required
-      className="flex-1 p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      className="w-80 p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
     />
     {/* Eye Button Outside */}
     <button
