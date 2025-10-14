@@ -4,6 +4,7 @@ import speedtest
 
 app = FastAPI()
 
+# Allow CORS for all origins (frontend)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,7 +22,7 @@ def speed_test():
     try:
         st = speedtest.Speedtest()
         st.get_best_server()
-        download = st.download() / 1_000_000
+        download = st.download() / 1_000_000  # Convert to Mbps
         upload = st.upload() / 1_000_000
         ping = st.results.ping
         return {
