@@ -31,4 +31,12 @@ export default function Login() {
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white font-semibold
+          className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+        >
+          Login
+        </button>
+      </form>
+    </div>
+  );
+}
+
