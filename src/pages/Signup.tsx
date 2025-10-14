@@ -35,7 +35,7 @@ export default function SignUp() {
           </div>
 
           {/* Email */}
-          <div className="flex flex-col gap-1 w-80 mx-auto">
+          <div className="flex flex-col gap-1 w-75 mx-auto">
             <label className="text-black font-semibold">Email</label>
             <input
               type="email"
@@ -49,7 +49,7 @@ export default function SignUp() {
           </div>
 
           {/* Password */}
-          <div className="flex flex-col gap-1 w-80 mx-auto">
+          <div className="flex flex-col gap-1 w-75 mx-auto">
             <label className="text-black font-semibold">Password</label>
             <div className="flex items-center w-full">
               <input
