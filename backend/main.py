@@ -1,31 +1,35 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, EmailStr
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, EmailStr
 import mysql.connector
 from passlib.hash import bcrypt
 
 # --------- Database Connection ---------
-db = mysql.connector.connect(
-    host="localhost",         # or your DB host
-    user="root",              # your DB username
-    password="rahul18",  # your DB password
-    database="speedcheck_db"
-)
-cursor = db.cursor(dictionary=True)
+try:
+    db = mysql.connector.connect(
+        host="localhost",         # your DB host
+        user="root",              # your DB username
+        password="rahul18",  # your DB password
+        database="speedcheck_db"
+    )
+    cursor = db.cursor(dictionary=True)
+    print("✅ Connected to MySQL")
+except mysql.connector.Error as e:
+    print("❌ MySQL connection error:", e)
 
 # --------- FastAPI App ---------
 app = FastAPI(title="SpeedCheck Hub Backend")
 
-# Allow CORS for frontend
+# --------- CORS for frontend ---------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace * with your frontend URL in production
+    allow_origins=["*"],  # Replace "*" with frontend URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --------- Request Schemas ---------
+# --------- Request Models ---------
 class User(BaseModel):
     email: EmailStr
     password: str
@@ -51,16 +55,20 @@ def signup(user: User):
         print("Error in signup:", e)
         raise HTTPException(status_code=500, detail=str(e))
 
-
 # --------- Login Endpoint ---------
 @app.post("/login")
 def login(user: User):
-    cursor.execute("SELECT * FROM users WHERE email=%s", (user.email,))
-    db_user = cursor.fetchone()
-    if not db_user:
-        raise HTTPException(status_code=400, detail="Invalid email or password")
+    try:
+        cursor.execute("SELECT * FROM users WHERE email=%s", (user.email,))
+        db_user = cursor.fetchone()
+        if not db_user:
+            raise HTTPException(status_code=400, detail="Invalid email or password")
 
-    if not bcrypt.verify(user.password, db_user["password"]):
-        raise HTTPException(status_code=400, detail="Invalid email or password")
+        if not bcrypt.verify(user.password, db_user["password"]):
+            raise HTTPException(status_code=400, detail="Invalid email or password")
 
-    return {"message": "Login successful"}
+        return {"message": "Login successful"}
+
+    except Exception as e:
+        print("Error in login:", e)
+        raise HTTPException(status_code=500, detail=str(e))
