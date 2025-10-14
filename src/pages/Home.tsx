@@ -1,97 +1,52 @@
 import { useState } from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-  CartesianGrid,
-} from "recharts";
 
-export default function Home() {
-  const [speed, setSpeed] = useState<{ download: number; upload: number; ping: number } | null>(null);
+export default function Home({ setSpeed }: any) {
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<any>(null);
 
-  const checkSpeed = async () => {
+  const runTest = async () => {
     setLoading(true);
-    setSpeed(null);
+    setResult(null);
     try {
-      const res = await fetch("http://localhost:8000/speedtest");
+      const res = await fetch("http://127.0.0.1:8000/speed");
       const data = await res.json();
-      if (!data.error) {
-        setSpeed({
-          download: data.download_mbps,
-          upload: data.upload_mbps,
-          ping: data.ping_ms,
-        });
-      }
-    } catch (err) {
-      alert("⚠️ Backend not running or connection failed.");
+      setResult(data);
+      setSpeed(data);
+    } catch (e) {
+      alert("Backend not running");
     }
     setLoading(false);
   };
 
-  const graphData = speed
-    ? [
-        { name: "Download", value: speed.download, color: "#3b82f6" },
-        { name: "Upload", value: speed.upload, color: "#10b981" },
-        { name: "Ping", value: speed.ping, color: "#8b5cf6" },
-      ]
-    : [];
-
   return (
-    <div className="text-center mt-10 px-4">
-      <h1 className="text-5xl font-bold mb-6 text-gray-800">Internet Speed Test</h1>
+    <div className="mt-32 flex flex-col items-center justify-center text-center">
+      <h1 className="text-5xl font-bold text-gray-800 mb-8">Internet Speed Test</h1>
 
-      {!speed && (
-        <button
-          onClick={checkSpeed}
-          className={`px-8 py-4 rounded-xl text-white font-semibold text-lg transition-all ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-          }`}
-          disabled={loading}
-        >
-          {loading ? "Running Test..." : "Run Speed Test"}
-        </button>
-      )}
+      <button
+        onClick={runTest}
+        disabled={loading}
+        className={`w-40 h-40 rounded-full text-2xl font-semibold flex items-center justify-center shadow-xl transition-transform duration-300 ${
+          loading
+            ? "bg-gray-400 text-white"
+            : "bg-blue-600 text-white hover:scale-105 hover:bg-blue-700"
+        }`}
+      >
+        {loading ? "Testing..." : "Run Test"}
+      </button>
 
-      {speed && (
-        <div className="mt-10 bg-white rounded-3xl shadow-2xl p-10 w-full max-w-5xl mx-auto border border-gray-200">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6">Your Internet Speed</h2>
-
-          {/* Speed Details */}
-          <div className="grid grid-cols-3 gap-6 mb-8 text-lg font-semibold">
-            <div className="bg-blue-50 rounded-xl py-6 shadow-inner">
-              <p className="text-blue-600 text-2xl">Download</p>
-              <p className="text-3xl font-bold">{speed.download.toFixed(2)} Mbps</p>
-            </div>
-            <div className="bg-green-50 rounded-xl py-6 shadow-inner">
-              <p className="text-green-600 text-2xl">Upload</p>
-              <p className="text-3xl font-bold">{speed.upload.toFixed(2)} Mbps</p>
-            </div>
-            <div className="bg-purple-50 rounded-xl py-6 shadow-inner">
-              <p className="text-purple-600 text-2xl">Ping</p>
-              <p className="text-3xl font-bold">{speed.ping.toFixed(2)} ms</p>
-            </div>
+      {result && (
+        <div className="mt-12 grid grid-cols-3 gap-6 w-full max-w-3xl">
+          <div className="bg-blue-100 p-6 rounded-2xl shadow-md">
+            <p className="text-lg font-semibold text-blue-700">Download</p>
+            <p className="text-3xl font-bold">{result.download} Mbps</p>
           </div>
-
-          {/* Graph Section */}
-          <div className="h-96 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={graphData} barSize={80}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" tick={{ fill: "#4b5563", fontSize: 16 }} />
-                <YAxis tick={{ fill: "#4b5563", fontSize: 16 }} />
-                <Tooltip cursor={{ fill: "transparent" }} />
-                <Bar dataKey="value" radius={[12, 12, 0, 0]}>
-                  {graphData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="bg-green-100 p-6 rounded-2xl shadow-md">
+            <p className="text-lg font-semibold text-green-700">Upload</p>
+            <p className="text-3xl font-bold">{result.upload} Mbps</p>
+          </div>
+          <div className="bg-purple-100 p-6 rounded-2xl shadow-md">
+            <p className="text-lg font-semibold text-purple-700">Ping</p>
+            <p className="text-3xl font-bold">{result.ping} ms</p>
           </div>
         </div>
       )}
