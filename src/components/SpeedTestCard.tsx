@@ -41,6 +41,18 @@ export default function SpeedTestCard() {
           <p className="text-lg font-medium">Upload: <span className="font-bold">{speed.upload_mbps} Mbps</span></p>
           <p className="text-lg font-medium">Ping: <span className="font-bold">{speed.ping_ms} ms</span></p>
         </div>
+      <div className="mt-8 bg-white rounded-2xl shadow-2xl p-8 text-center w-96 border border-gray-200">
+  <p className="text-2xl font-semibold text-gray-800 mb-2">
+    Download: <span className="text-blue-600 font-bold">{speed.download_mbps} Mbps</span>
+  </p>
+  <p className="text-2xl font-semibold text-gray-800 mb-2">
+    Upload: <span className="text-green-600 font-bold">{speed.upload_mbps} Mbps</span>
+  </p>
+  <p className="text-2xl font-semibold text-gray-800">
+    Ping: <span className="text-purple-600 font-bold">{speed.ping_ms} ms</span>
+  </p>
+</div>
+
       )}
     </div>
   );
