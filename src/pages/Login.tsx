@@ -49,12 +49,12 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full p-3 pr-10 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-9 transform -translate-y-1/2 text-gray-600 hover:text-blue-600"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-600"
             >
               {showPassword ? (
                 <svg
