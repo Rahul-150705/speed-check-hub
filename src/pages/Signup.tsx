@@ -29,7 +29,7 @@ export default function SignUp() {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-80 p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-85 p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
@@ -43,7 +43,7 @@ export default function SignUp() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-80 p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-85 p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
@@ -58,7 +58,7 @@ export default function SignUp() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-80 p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-85 p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
               <button
                 type="button"
