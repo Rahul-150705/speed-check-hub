@@ -33,18 +33,24 @@ class User(BaseModel):
 # --------- Signup Endpoint ---------
 @app.post("/signup")
 def signup(user: User):
-    cursor.execute("SELECT * FROM users WHERE email=%s", (user.email,))
-    existing_user = cursor.fetchone()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already exists")
+    try:
+        cursor.execute("SELECT * FROM users WHERE email=%s", (user.email,))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already exists")
 
-    hashed_password = bcrypt.hash(user.password)
-    cursor.execute(
-        "INSERT INTO users (email, password) VALUES (%s, %s)",
-        (user.email, hashed_password)
-    )
-    db.commit()
-    return {"message": "User created successfully"}
+        hashed_password = bcrypt.hash(user.password)
+        cursor.execute(
+            "INSERT INTO users (email, password) VALUES (%s, %s)",
+            (user.email, hashed_password)
+        )
+        db.commit()
+        return {"message": "User created successfully"}
+
+    except Exception as e:
+        print("Error in signup:", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 # --------- Login Endpoint ---------
 @app.post("/login")
