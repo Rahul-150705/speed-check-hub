@@ -1,26 +1,26 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
+import SpeedFloat from "./components/SpeedFloat";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
-import SpeedTestCard from "./components/SpeedTestCard";
-import SpeedFloat from "./components/SpeedFloat";
 
 export default function App() {
-  const [page, setPage] = useState<"home" | "about" | "login" | "float">("home");
+  const [page, setPage] = useState<"home"|"about"|"login"|"float">("home");
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar page={page} setPage={setPage} />
-
-      <div className="flex-1 ml-20 p-10">
+    <div className="flex min-h-screen bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100">
+      <div className="flex-1 p-10">
         {page === "home" && <Home />}
         {page === "about" && <About />}
         {page === "login" && <Login />}
-        {page === "float" && <SpeedTestCard />}
+        {page === "float" && <p className="text-2xl font-semibold text-gray-800">Click the floating icon to monitor speed</p>}
       </div>
 
-      {/* Floating Widget always active */}
+      {/* Sidebar Right */}
+      <Sidebar page={page} setPage={setPage} />
+
+      {/* Floating Speed Widget */}
       <SpeedFloat />
     </div>
   );
