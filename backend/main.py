@@ -4,7 +4,6 @@ import speedtest
 
 app = FastAPI()
 
-# Allow frontend access
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,11 +13,11 @@ app.add_middleware(
 )
 
 @app.get("/")
-def home():
+def root():
     return {"message": "SpeedTest API running"}
 
 @app.get("/speed")
-def run_speed_test():
+def speed_test():
     try:
         st = speedtest.Speedtest()
         st.get_best_server()
