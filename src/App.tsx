@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
-import SpeedFloat from "./components/SpeedFloat";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
+import SpeedFloat from "./components/SpeedFloat";
 
 export default function App() {
   const [page, setPage] = useState<"home"|"about"|"login"|"float">("home");
@@ -14,13 +14,12 @@ export default function App() {
         {page === "home" && <Home />}
         {page === "about" && <About />}
         {page === "login" && <Login />}
-        {page === "float" && <p className="text-2xl font-semibold text-gray-800">Click the floating icon to monitor speed</p>}
+        {page === "float" && <p className="text-2xl font-semibold text-gray-800">Use the floating widget to monitor speed</p>}
       </div>
 
-      {/* Sidebar Right */}
       <Sidebar page={page} setPage={setPage} />
 
-      {/* Floating Speed Widget */}
+      {/* Floating real-time speed widget */}
       <SpeedFloat />
     </div>
   );
