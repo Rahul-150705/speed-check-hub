@@ -1,74 +1,25 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, EmailStr
-import mysql.connector
-from passlib.hash import bcrypt
+import speedtest
 
-# --------- Database Connection ---------
-try:
-    db = mysql.connector.connect(
-        host="localhost",         # your DB host
-        user="root",              # your DB username
-        password="rahul18",  # your DB password
-        database="speedcheck_db"
-    )
-    cursor = db.cursor(dictionary=True)
-    print("✅ Connected to MySQL")
-except mysql.connector.Error as e:
-    print("❌ MySQL connection error:", e)
+app = FastAPI()
 
-# --------- FastAPI App ---------
-app = FastAPI(title="SpeedCheck Hub Backend")
-
-# --------- CORS for frontend ---------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace "*" with frontend URL in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --------- Request Models ---------
-class User(BaseModel):
-    email: EmailStr
-    password: str
-
-# --------- Signup Endpoint ---------
-@app.post("/signup")
-def signup(user: User):
+@app.get("/speed")
+def get_speed():
     try:
-        cursor.execute("SELECT * FROM users WHERE email=%s", (user.email,))
-        existing_user = cursor.fetchone()
-        if existing_user:
-            raise HTTPException(status_code=400, detail="Email already exists")
-
-        hashed_password = bcrypt.hash(user.password)
-        cursor.execute(
-            "INSERT INTO users (email, password) VALUES (%s, %s)",
-            (user.email, hashed_password)
-        )
-        db.commit()
-        return {"message": "User created successfully"}
-
+        st = speedtest.Speedtest()
+        st.get_best_server()
+        download = st.download() / 1_000_000
+        upload = st.upload() / 1_000_000
+        ping = st.results.ping
+        return {"download": round(download, 2), "upload": round(upload, 2), "ping": round(ping, 2)}
     except Exception as e:
-        print("Error in signup:", e)
-        raise HTTPException(status_code=500, detail=str(e))
-
-# --------- Login Endpoint ---------
-@app.post("/login")
-def login(user: User):
-    try:
-        cursor.execute("SELECT * FROM users WHERE email=%s", (user.email,))
-        db_user = cursor.fetchone()
-        if not db_user:
-            raise HTTPException(status_code=400, detail="Invalid email or password")
-
-        if not bcrypt.verify(user.password, db_user["password"]):
-            raise HTTPException(status_code=400, detail="Invalid email or password")
-
-        return {"message": "Login successful"}
-
-    except Exception as e:
-        print("Error in login:", e)
-        raise HTTPException(status_code=500, detail=str(e))
+        return {"error": str(e)}
