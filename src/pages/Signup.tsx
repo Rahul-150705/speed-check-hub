@@ -60,12 +60,13 @@ export default function SignUp() {
                 onChange={handleChange}
                 required
                 className="w-80 p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              />
-              <button
+                 <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="ml-2 text-gray-600 hover:text-blue-600"
               >
+              />
+             
                 {showPassword ? (
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a10.05 10.05 0 011.175-4.125M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
