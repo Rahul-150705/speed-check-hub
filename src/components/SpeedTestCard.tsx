@@ -8,7 +8,7 @@ export default function SpeedTestCard() {
     setLoading(true);
     setSpeed(null);
     try {
-      const res = await fetch("http://localhost:8000/speedtest");
+      const res = await fetch("http://127.0.0.1:8000/speedtest");
       const data = await res.json();
       setSpeed(data);
     } catch (err) {
