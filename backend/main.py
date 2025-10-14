@@ -16,8 +16,8 @@ app.add_middleware(
 # MySQL connection
 db = mysql.connector.connect(
     host="localhost",
-    user="YOUR_MYSQL_USER",
-    password="YOUR_MYSQL_PASSWORD",
+    user="root",
+    password="rahul18",
     database="speedcheck_db"
 )
 
