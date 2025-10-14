@@ -70,7 +70,7 @@ export default function SignUp() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-600"
+              className="absolute right-3 inset-y-0 flex items-center text-gray-600 hover:text-blue-600"
             >
               {showPassword ? (
                 <svg
