@@ -31,7 +31,11 @@ export default function SpeedTestCard() {
         {loading ? "Testing..." : "Check Speed"}
       </button>
 
-      {speed && (
+      {loading && (
+        <div className="mt-8 animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600"></div>
+      )}
+
+      {speed && !loading && (
         <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 text-center w-80">
           <p className="text-lg font-medium">Download: <span className="font-bold">{speed.download_mbps} Mbps</span></p>
           <p className="text-lg font-medium">Upload: <span className="font-bold">{speed.upload_mbps} Mbps</span></p>
