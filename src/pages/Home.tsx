@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 export default function Home() {
   const [speed, setSpeed] = useState<{ download: number; upload: number; ping: number } | null>(null);
   const [loading, setLoading] = useState(false);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null); // for click highlight
 
   const checkSpeed = async () => {
     setLoading(true);
@@ -21,11 +21,15 @@ export default function Home() {
 
   const graphData = speed
     ? [
-        { name: "Download", value: speed.download, color: "#3b82f6" }, // blue
-        { name: "Upload", value: speed.upload, color: "#10b981" },     // green
-        { name: "Ping", value: speed.ping, color: "#8b5cf6" },         // purple
+        { name: "Download", value: speed.download, color: "#3b82f6" },
+        { name: "Upload", value: speed.upload, color: "#10b981" },
+        { name: "Ping", value: speed.ping, color: "#8b5cf6" },
       ]
     : [];
+
+  const handleBarClick = (index: number) => {
+    setActiveIndex(index === activeIndex ? null : index);
+  };
 
   return (
     <div className="text-center mt-10">
@@ -55,26 +59,21 @@ export default function Home() {
             <BarChart
               data={graphData}
               margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-              barCategoryGap="40%"
+              barCategoryGap="50%"
             >
               <XAxis dataKey="name" tick={{ fontSize: 16, fontWeight: "bold" }} />
               <YAxis />
               <Tooltip />
 
-              <Bar
-                dataKey="value"
-                onMouseOver={(_, index) => setActiveIndex(index)}
-                onMouseOut={() => setActiveIndex(null)}
-              >
+              <Bar dataKey="value" onClick={(_, index) => handleBarClick(index)}>
                 {graphData.map((entry, index) => (
                   <Cell
                     key={entry.name}
-                    fill={entry.color}
                     cursor="pointer"
+                    fill={activeIndex === index ? "#f97316" : entry.color} // orange when clicked
                     style={{
                       transition: "all 0.3s ease",
-                      transform: activeIndex === index ? "scale(1.2)" : "scale(1)",
-                      opacity: activeIndex === index ? 1 : 0.8,
+                      transform: "scaleY(1)",
                     }}
                   />
                 ))}
