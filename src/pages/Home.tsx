@@ -1,20 +1,34 @@
 import { useState } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+  CartesianGrid,
+} from "recharts";
 
 export default function Home() {
   const [speed, setSpeed] = useState<{ download: number; upload: number; ping: number } | null>(null);
   const [loading, setLoading] = useState(false);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null); // for click highlight
 
   const checkSpeed = async () => {
     setLoading(true);
     setSpeed(null);
     try {
-      const res = await fetch("http://localhost:8000/speed");
+      const res = await fetch("http://localhost:8000/speedtest");
       const data = await res.json();
-      if (!data.error) setSpeed(data);
+      if (!data.error) {
+        setSpeed({
+          download: data.download_mbps,
+          upload: data.upload_mbps,
+          ping: data.ping_ms,
+        });
+      }
     } catch (err) {
-      alert("Backend not running!");
+      alert("⚠️ Backend not running or connection failed.");
     }
     setLoading(false);
   };
@@ -27,10 +41,6 @@ export default function Home() {
       ]
     : [];
 
-  const handleBarClick = (index: number) => {
-    setActiveIndex(index === activeIndex ? null : index);
-  };
-
   return (
     <div className="text-center mt-10">
       <h1 className="text-5xl font-bold mb-6 text-gray-800">Internet Speed Test</h1>
@@ -38,57 +48,28 @@ export default function Home() {
       {!speed && (
         <button
           onClick={checkSpeed}
-          className={`px-6 py-3 rounded-lg text-white font-semibold transition ${
+          className={`px-8 py-4 rounded-xl text-white font-semibold text-lg transition-all ${
             loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
           }`}
           disabled={loading}
         >
-          {loading ? "Running Test..." : "Run Test"}
+          {loading ? "Running Test..." : "Run Speed Test"}
         </button>
       )}
 
       {speed && (
-        <div className="mt-8 bg-white rounded-2xl shadow-xl p-6 w-full max-w-4xl mx-auto border border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Your Internet Speed</h2>
-          <p className="text-blue-600 text-xl font-semibold mb-2">Download: {speed.download.toFixed(2)} Mbps</p>
-          <p className="text-green-600 text-xl font-semibold mb-2">Upload: {speed.upload.toFixed(2)} Mbps</p>
-          <p className="text-purple-600 text-xl font-semibold mb-4">Ping: {speed.ping} ms</p>
+        <div className="mt-10 bg-white rounded-3xl shadow-2xl p-10 w-full max-w-5xl mx-auto border border-gray-200">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">Your Internet Speed</h2>
 
-          <h3 className="text-lg font-semibold mb-2">Speed Graph</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              data={graphData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-              barCategoryGap="50%"
-            >
-              <XAxis dataKey="name" tick={{ fontSize: 16, fontWeight: "bold" }} />
-              <YAxis />
-              <Tooltip />
-
-              <Bar dataKey="value" onClick={(_, index) => handleBarClick(index)}>
-                {graphData.map((entry, index) => (
-                  <Cell
-                    key={entry.name}
-                    cursor="pointer"
-                    fill={activeIndex === index ? "#f97316" : entry.color} // orange when clicked
-                    style={{
-                      transition: "all 0.3s ease",
-                      transform: "scaleY(1)",
-                    }}
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-
-          <button
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-            onClick={() => setSpeed(null)}
-          >
-            Retest
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
+          <div className="grid grid-cols-3 gap-6 mb-8 text-lg font-semibold">
+            <div className="bg-blue-50 rounded-xl py-6 shadow-inner">
+              <p className="text-blue-600 text-2xl">Download</p>
+              <p className="text-3xl font-bold">{speed.download.toFixed(2)} Mbps</p>
+            </div>
+            <div className="bg-green-50 rounded-xl py-6 shadow-inner">
+              <p className="text-green-600 text-2xl">Upload</p>
+              <p className="text-3xl font-bold">{speed.upload.toFixed(2)} Mbps</p>
+            </div>
+            <div className="bg-purple-50 rounded-xl py-6 shadow-inner">
+              <p className="text-purple-600 text-2xl">Ping</p>
+              <p className="text-3xl font-bold">{speed.ping
