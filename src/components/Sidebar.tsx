@@ -6,15 +6,14 @@ type Props = {
 };
 
 export default function Sidebar({ page, setPage }: Props) {
-  const menu = ["home", "about", "login", "float"];
+  const menu = ["home", "float", "login", "about"];
   return (
-    <div className="fixed top-0 right-0 left-0 h-16 bg-white shadow-lg flex items-center justify-center space-x-10 z-40">
+    <div className="fixed top-1/4 right-0 flex flex-col bg-white shadow-lg rounded-l-full py-4 px-2 space-y-6 z-50">
       {menu.map((item) => (
         <button
           key={item}
-          className={`text-sm font-semibold ${
-            page === item ? "text-blue-600" : "text-gray-600"
-          } hover:text-blue-500 transition`}
+          className={`w-16 h-12 rounded-full text-sm font-semibold flex items-center justify-center transition-all
+            ${page === item ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-blue-500 hover:text-white"}`}
           onClick={() => setPage(item)}
         >
           {item.toUpperCase()}
