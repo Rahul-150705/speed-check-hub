@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 export default function Home() {
   const [speed, setSpeed] = useState<{ download: number; upload: number; ping: number } | null>(null);
   const [loading, setLoading] = useState(false);
-  const [hoverIndex, setHoverIndex] = useState<number | null>(null); // for hover effect
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const checkSpeed = async () => {
     setLoading(true);
@@ -52,24 +52,30 @@ export default function Home() {
 
           <h3 className="text-lg font-semibold mb-2">Speed Graph</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={graphData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }} barGap={50}>
+            <BarChart
+              data={graphData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              barCategoryGap="40%"
+            >
               <XAxis dataKey="name" tick={{ fontSize: 16, fontWeight: "bold" }} />
               <YAxis />
               <Tooltip />
 
               <Bar
                 dataKey="value"
-                onMouseOver={(_, index) => setHoverIndex(index)}
-                onMouseOut={() => setHoverIndex(null)}
+                onMouseOver={(_, index) => setActiveIndex(index)}
+                onMouseOut={() => setActiveIndex(null)}
               >
                 {graphData.map((entry, index) => (
                   <Cell
                     key={entry.name}
                     fill={entry.color}
                     cursor="pointer"
-                    // hover effect: lift up and brighten
-                    transform={hoverIndex === index ? "translate(0,-10)" : ""}
-                    fillOpacity={hoverIndex === index ? 0.9 : 1}
+                    style={{
+                      transition: "all 0.3s ease",
+                      transform: activeIndex === index ? "scale(1.2)" : "scale(1)",
+                      opacity: activeIndex === index ? 1 : 0.8,
+                    }}
                   />
                 ))}
               </Bar>
