@@ -29,7 +29,7 @@ export default function SignUp() {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full p-1 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
