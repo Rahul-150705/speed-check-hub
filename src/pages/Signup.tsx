@@ -35,7 +35,7 @@ export default function SignUp() {
           </div>
 
           {/* Email */}
-          <div className="flex flex-col gap-1 w-75 mx-auto">
+          <div className="flex flex-col gap-1 w-80 mx-auto">
             <label className="text-black font-semibold">Email</label>
             <input
               type="email"
@@ -44,12 +44,12 @@ export default function SignUp() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-80 p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
           {/* Password */}
-          <div className="flex flex-col gap-1 w-75 mx-auto">
+          <div className="flex flex-col gap-1 w-80 mx-auto">
             <label className="text-black font-semibold">Password</label>
             <div className="flex items-center w-full">
               <input
@@ -59,7 +59,7 @@ export default function SignUp() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-80 p-3 rounded-lg border border-gray-300 text-black placeholder-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
               <button
                 type="button"
