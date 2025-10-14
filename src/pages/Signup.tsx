@@ -66,4 +66,13 @@ export default function SignUp() {
           </div>
         </div>
 
-       
+        <button
+          onClick={handleSignUp}
+          className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition"
+        >
+          Sign Up
+        </button>
+      </div>
+    </div>
+  );
+}
