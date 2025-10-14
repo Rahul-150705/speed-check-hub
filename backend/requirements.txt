@@ -1,3 +1,5 @@
 fastapi
 uvicorn
-speedtest-cli
+mysql-connector-python
+passlib[bcrypt]
+python-multipart
