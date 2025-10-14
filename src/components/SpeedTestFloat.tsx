@@ -3,14 +3,10 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
 export default function SpeedTestFloat() {
-  const [speed, setSpeed] = useState<{ download_mbps: number; upload_mbps: number; ping_ms: number }>({
-    download_mbps: 0,
-    upload_mbps: 0,
-    ping_ms: 0,
-  });
+  const [speed, setSpeed] = useState({ download_mbps: 0, upload_mbps: 0, ping_ms: 0 });
   const [expanded, setExpanded] = useState(false);
 
-  // Fetch speed every 3 seconds
+  // Real-time fetch every 3 sec
   useEffect(() => {
     const fetchSpeed = async () => {
       try {
@@ -22,15 +18,14 @@ export default function SpeedTestFloat() {
       }
     };
 
-    fetchSpeed(); // initial fetch
-    const interval = setInterval(fetchSpeed, 3000); // every 3 sec
-
+    fetchSpeed(); // Initial fetch
+    const interval = setInterval(fetchSpeed, 3000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="fixed bottom-8 right-8 z-50">
-      {/* Floating circle */}
+      {/* Floating Icon */}
       <div
         onClick={() => setExpanded(!expanded)}
         className="w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
@@ -48,7 +43,7 @@ export default function SpeedTestFloat() {
         />
       </div>
 
-      {/* Expanded panel */}
+      {/* Expanded Panel */}
       {expanded && (
         <div className="mt-4 bg-white p-6 rounded-2xl shadow-2xl w-80">
           <h2 className="text-xl font-bold mb-4 text-gray-800">Internet Speed</h2>
