@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 export default function Home() {
   const [speed, setSpeed] = useState<{ download: number; upload: number; ping: number } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null); // for hover effect
 
   const checkSpeed = async () => {
     setLoading(true);
@@ -20,9 +21,9 @@ export default function Home() {
 
   const graphData = speed
     ? [
-        { name: "Download", value: speed.download },
-        { name: "Upload", value: speed.upload },
-        { name: "Ping", value: speed.ping },
+        { name: "Download", value: speed.download, color: "#3b82f6" }, // blue
+        { name: "Upload", value: speed.upload, color: "#10b981" },     // green
+        { name: "Ping", value: speed.ping, color: "#8b5cf6" },         // purple
       ]
     : [];
 
@@ -43,19 +44,35 @@ export default function Home() {
       )}
 
       {speed && (
-        <div className="mt-8 bg-white rounded-2xl shadow-xl p-6 w-96 mx-auto border border-gray-200">
+        <div className="mt-8 bg-white rounded-2xl shadow-xl p-6 w-full max-w-4xl mx-auto border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Your Internet Speed</h2>
           <p className="text-blue-600 text-xl font-semibold mb-2">Download: {speed.download.toFixed(2)} Mbps</p>
           <p className="text-green-600 text-xl font-semibold mb-2">Upload: {speed.upload.toFixed(2)} Mbps</p>
           <p className="text-purple-600 text-xl font-semibold mb-4">Ping: {speed.ping} ms</p>
 
           <h3 className="text-lg font-semibold mb-2">Speed Graph</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={graphData}>
-              <XAxis dataKey="name" />
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={graphData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }} barGap={50}>
+              <XAxis dataKey="name" tick={{ fontSize: 16, fontWeight: "bold" }} />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="value" fill="#3b82f6" />
+
+              <Bar
+                dataKey="value"
+                onMouseOver={(_, index) => setHoverIndex(index)}
+                onMouseOut={() => setHoverIndex(null)}
+              >
+                {graphData.map((entry, index) => (
+                  <Cell
+                    key={entry.name}
+                    fill={entry.color}
+                    cursor="pointer"
+                    // hover effect: lift up and brighten
+                    transform={hoverIndex === index ? "translate(0,-10)" : ""}
+                    fillOpacity={hoverIndex === index ? 0.9 : 1}
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
 
