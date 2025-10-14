@@ -1,34 +1,45 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
-import speedtest
+import mysql.connector
+from passlib.hash import bcrypt
 
 app = FastAPI()
 
-# Allow CORS for all origins (frontend)
+# Enable CORS for frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get("/")
-def root():
-    return {"message": "SpeedTest API running"}
+# MySQL connection
+db = mysql.connector.connect(
+    host="localhost",
+    user="YOUR_MYSQL_USER",
+    password="YOUR_MYSQL_PASSWORD",
+    database="speedcheck_db"
+)
 
-@app.get("/speed")
-def speed_test():
+cursor = db.cursor(dictionary=True)
+
+@app.post("/signup")
+async def signup(email: str = Form(...), password: str = Form(...)):
+    hashed_password = bcrypt.hash(password)
     try:
-        st = speedtest.Speedtest()
-        st.get_best_server()
-        download = st.download() / 1_000_000  # Convert to Mbps
-        upload = st.upload() / 1_000_000
-        ping = st.results.ping
-        return {
-            "download": round(download, 2),
-            "upload": round(upload, 2),
-            "ping": ping
-        }
-    except Exception as e:
-        return {"error": str(e)}
+        cursor.execute(
+            "INSERT INTO users (email, password) VALUES (%s, %s)",
+            (email, hashed_password)
+        )
+        db.commit()
+        return {"message": "User registered successfully!"}
+    except mysql.connector.IntegrityError:
+        return {"error": "Email already exists!"}
+
+@app.post("/login")
+async def login(email: str = Form(...), password: str = Form(...)):
+    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+    user = cursor.fetchone()
+    if user and bcrypt.verify(password, user["password"]):
+        return {"message": "Login successful!"}
+    return {"error": "Invalid email or password"}
