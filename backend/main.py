@@ -8,7 +8,7 @@ from passlib.hash import bcrypt
 db = mysql.connector.connect(
     host="localhost",         # or your DB host
     user="root",              # your DB username
-    password="yourpassword",  # your DB password
+    password="rahul18",  # your DB password
     database="speedcheck_db"
 )
 cursor = db.cursor(dictionary=True)
