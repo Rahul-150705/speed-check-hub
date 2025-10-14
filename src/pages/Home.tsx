@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export default function Home() {
-  const [speed, setSpeed] = useState<{ download: number; upload: number; ping: number } | null>(null);
+  const [speed, setSpeed] = useState<{ download: number; upload: number } | null>(null);
   const [loading, setLoading] = useState(false);
 
   const checkSpeed = async () => {
@@ -12,18 +12,14 @@ export default function Home() {
       const data = await res.json();
       setSpeed(data);
     } catch (err) {
-      alert("Failed to fetch speed. Is backend running?");
+      alert("Backend not running!");
     }
     setLoading(false);
   };
 
   return (
-    <div className="text-center">
+    <div className="text-center mt-10">
       <h1 className="text-5xl font-bold mb-6 text-gray-800">Welcome to SpeedCheck Hub</h1>
-      <p className="text-lg text-gray-600 mb-6">
-        Monitor your internet speed in real-time with our floating speed widget.
-      </p>
-
       <button
         onClick={checkSpeed}
         className={`px-6 py-3 rounded-lg text-white font-semibold transition ${
@@ -34,11 +30,10 @@ export default function Home() {
         {loading ? "Testing..." : "Click Speed Test"}
       </button>
 
-      {speed && !loading && (
-        <div className="mt-8 bg-white rounded-2xl shadow-xl p-6 inline-block w-80 text-center">
+      {speed && (
+        <div className="mt-8 bg-white rounded-2xl shadow-xl p-6 w-80 inline-block">
           <p className="text-blue-600 text-2xl font-bold mb-2">Download: {speed.download} Mbps</p>
-          <p className="text-green-600 text-2xl font-bold mb-2">Upload: {speed.upload} Mbps</p>
-          <p className="text-purple-600 text-2xl font-bold">Ping: {speed.ping} ms</p>
+          <p className="text-green-600 text-2xl font-bold">Upload: {speed.upload} Mbps</p>
         </div>
       )}
     </div>
