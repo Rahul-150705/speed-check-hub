@@ -42,7 +42,7 @@ export default function Home() {
     : [];
 
   return (
-    <div className="text-center mt-10">
+    <div className="text-center mt-10 px-4">
       <h1 className="text-5xl font-bold mb-6 text-gray-800">Internet Speed Test</h1>
 
       {!speed && (
@@ -61,6 +61,7 @@ export default function Home() {
         <div className="mt-10 bg-white rounded-3xl shadow-2xl p-10 w-full max-w-5xl mx-auto border border-gray-200">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">Your Internet Speed</h2>
 
+          {/* Speed Details */}
           <div className="grid grid-cols-3 gap-6 mb-8 text-lg font-semibold">
             <div className="bg-blue-50 rounded-xl py-6 shadow-inner">
               <p className="text-blue-600 text-2xl">Download</p>
@@ -72,4 +73,28 @@ export default function Home() {
             </div>
             <div className="bg-purple-50 rounded-xl py-6 shadow-inner">
               <p className="text-purple-600 text-2xl">Ping</p>
-              <p className="text-3xl font-bold">{speed.ping
+              <p className="text-3xl font-bold">{speed.ping.toFixed(2)} ms</p>
+            </div>
+          </div>
+
+          {/* Graph Section */}
+          <div className="h-96 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={graphData} barSize={80}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="name" tick={{ fill: "#4b5563", fontSize: 16 }} />
+                <YAxis tick={{ fill: "#4b5563", fontSize: 16 }} />
+                <Tooltip cursor={{ fill: "transparent" }} />
+                <Bar dataKey="value" radius={[12, 12, 0, 0]}>
+                  {graphData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
