@@ -19,34 +19,42 @@ export default function Home({ setSpeed }: any) {
   };
 
   return (
-    <div className="mt-32 flex flex-col items-center justify-center text-center">
-      <h1 className="text-5xl font-bold text-gray-800 mb-8">Internet Speed Test</h1>
+    <div className="flex flex-col items-center justify-center text-center px-4">
+      <h1 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-600 mb-10 mt-6 drop-shadow-md">
+        Internet Speed Test
+      </h1>
 
       <button
         onClick={runTest}
         disabled={loading}
-        className={`w-40 h-40 rounded-full text-2xl font-semibold flex items-center justify-center shadow-xl transition-transform duration-300 ${
+        className={`w-48 h-48 rounded-full text-2xl font-bold flex items-center justify-center shadow-2xl transition-all duration-500 ${
           loading
             ? "bg-gray-400 text-white"
-            : "bg-blue-600 text-white hover:scale-105 hover:bg-blue-700"
+            : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:scale-110 hover:shadow-indigo-300/50"
         }`}
       >
-        {loading ? "Testing..." : "Run Test"}
+        {loading ? (
+          <span className="animate-pulse">Testing...</span>
+        ) : (
+          "Run Test"
+        )}
       </button>
 
       {result && (
-        <div className="mt-12 grid grid-cols-3 gap-6 w-full max-w-3xl">
-          <div className="bg-blue-100 p-6 rounded-2xl shadow-md">
-            <p className="text-lg font-semibold text-blue-700">Download</p>
-            <p className="text-3xl font-bold">{result.download} Mbps</p>
+        <div className="mt-14 flex flex-wrap justify-center gap-8 w-full max-w-5xl">
+          <div className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg w-64 transform hover:scale-105 transition-all">
+            <p className="text-lg font-semibold text-blue-700 mb-2">Download Speed</p>
+            <p className="text-4xl font-bold text-blue-600">{result.download} Mbps</p>
           </div>
-          <div className="bg-green-100 p-6 rounded-2xl shadow-md">
-            <p className="text-lg font-semibold text-green-700">Upload</p>
-            <p className="text-3xl font-bold">{result.upload} Mbps</p>
+
+          <div className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg w-64 transform hover:scale-105 transition-all">
+            <p className="text-lg font-semibold text-green-700 mb-2">Upload Speed</p>
+            <p className="text-4xl font-bold text-green-600">{result.upload} Mbps</p>
           </div>
-          <div className="bg-purple-100 p-6 rounded-2xl shadow-md">
-            <p className="text-lg font-semibold text-purple-700">Ping</p>
-            <p className="text-3xl font-bold">{result.ping} ms</p>
+
+          <div className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg w-64 transform hover:scale-105 transition-all">
+            <p className="text-lg font-semibold text-purple-700 mb-2">Ping</p>
+            <p className="text-4xl font-bold text-purple-600">{result.ping} ms</p>
           </div>
         </div>
       )}
