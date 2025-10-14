@@ -1,45 +1,60 @@
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, EmailStr
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
 from passlib.hash import bcrypt
 
-app = FastAPI()
+# --------- Database Connection ---------
+db = mysql.connector.connect(
+    host="localhost",         # or your DB host
+    user="root",              # your DB username
+    password="yourpassword",  # your DB password
+    database="speedcheck_db"
+)
+cursor = db.cursor(dictionary=True)
 
-# Enable CORS for frontend
+# --------- FastAPI App ---------
+app = FastAPI(title="SpeedCheck Hub Backend")
+
+# Allow CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Replace * with your frontend URL in production
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# MySQL connection
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="rahul18",
-    database="speedcheck_db"
-)
+# --------- Request Schemas ---------
+class User(BaseModel):
+    email: EmailStr
+    password: str
 
-cursor = db.cursor(dictionary=True)
-
+# --------- Signup Endpoint ---------
 @app.post("/signup")
-async def signup(email: str = Form(...), password: str = Form(...)):
-    hashed_password = bcrypt.hash(password)
-    try:
-        cursor.execute(
-            "INSERT INTO users (email, password) VALUES (%s, %s)",
-            (email, hashed_password)
-        )
-        db.commit()
-        return {"message": "User registered successfully!"}
-    except mysql.connector.IntegrityError:
-        return {"error": "Email already exists!"}
+def signup(user: User):
+    cursor.execute("SELECT * FROM users WHERE email=%s", (user.email,))
+    existing_user = cursor.fetchone()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already exists")
 
+    hashed_password = bcrypt.hash(user.password)
+    cursor.execute(
+        "INSERT INTO users (email, password) VALUES (%s, %s)",
+        (user.email, hashed_password)
+    )
+    db.commit()
+    return {"message": "User created successfully"}
+
+# --------- Login Endpoint ---------
 @app.post("/login")
-async def login(email: str = Form(...), password: str = Form(...)):
-    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
-    user = cursor.fetchone()
-    if user and bcrypt.verify(password, user["password"]):
-        return {"message": "Login successful!"}
-    return {"error": "Invalid email or password"}
+def login(user: User):
+    cursor.execute("SELECT * FROM users WHERE email=%s", (user.email,))
+    db_user = cursor.fetchone()
+    if not db_user:
+        raise HTTPException(status_code=400, detail="Invalid email or password")
+
+    if not bcrypt.verify(user.password, db_user["password"]):
+        raise HTTPException(status_code=400, detail="Invalid email or password")
+
+    return {"message": "Login successful"}
