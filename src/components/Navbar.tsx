@@ -7,6 +7,7 @@ type Props = {
 
 export default function Navbar({ page, setPage }: Props) {
   const menu = ["home", "dashboard", "login"];
+
   return (
     <div className="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-md shadow-md z-50 flex justify-end items-center px-10 py-4 space-x-8">
       {menu.map((item) => (
@@ -22,9 +23,11 @@ export default function Navbar({ page, setPage }: Props) {
           {item}
         </button>
       ))}
+
+      {/* Sign Up button — blue background */}
       <button
         onClick={() => setPage("signup")}
-        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:scale-105 transition-all"
+        className="bg-blue-600 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-700 hover:scale-105 transition-all"
       >
         Sign Up
       </button>
