@@ -8,11 +8,13 @@ type Props = {
 export default function Sidebar({ page, setPage }: Props) {
   const menu = ["home", "about", "login", "float"];
   return (
-    <div className="fixed right-0 top-0 h-full w-20 bg-white shadow-lg flex flex-col items-center py-6 space-y-6 z-40">
+    <div className="fixed top-0 right-0 left-0 h-16 bg-white shadow-lg flex items-center justify-center space-x-10 z-40">
       {menu.map((item) => (
         <button
           key={item}
-          className={`text-sm font-semibold ${page === item ? "text-blue-600" : "text-gray-600"} hover:text-blue-500`}
+          className={`text-sm font-semibold ${
+            page === item ? "text-blue-600" : "text-gray-600"
+          } hover:text-blue-500 transition`}
           onClick={() => setPage(item)}
         >
           {item.toUpperCase()}
