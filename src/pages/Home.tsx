@@ -1,24 +1,25 @@
 import { useState } from "react";
 
-export default function Home() {
-  const [speed, setSpeed] = useState(null);
+export default function Home({ setSpeed }: any) {
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<any>(null);
 
-  const checkSpeed = async () => {
+  const runTest = async () => {
     setLoading(true);
-    setSpeed(null);
+    setResult(null);
     try {
-      const response = await fetch("http://localhost:8000/speedtest");
-      const data = await response.json();
+      const res = await fetch("http://127.0.0.1:8000/speed");
+      const data = await res.json();
+      setResult(data);
       setSpeed(data);
-    } catch (error) {
-      console.error("Error fetching speed:", error);
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      alert("Backend not running");
     }
+    setLoading(false);
   };
 
-  const getSpeedFeedback = (download) => {
+  // 🔹 Function to decide feedback and colors
+  const getSpeedFeedback = (download: number) => {
     if (download < 2)
       return {
         text: "❌ Very slow — only basic browsing possible.",
@@ -57,58 +58,71 @@ export default function Home() {
       };
   };
 
-  const feedback = speed ? getSpeedFeedback(speed.download) : null;
+  const feedback = result ? getSpeedFeedback(result.download) : null;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 text-gray-800 px-4">
-      <h1 className="text-4xl font-extrabold mb-6 text-blue-800 drop-shadow-sm">
+    <div className="flex flex-col items-center justify-center text-center px-4 min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
+      <h1 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-600 mb-10 mt-6 drop-shadow-md">
         Internet Speed Test
       </h1>
 
+      {/* Run Button */}
       <button
-        onClick={checkSpeed}
+        onClick={runTest}
         disabled={loading}
-        className={`${
-          loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-        } text-white px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-md hover:shadow-lg`}
+        className={`w-48 h-48 rounded-full text-2xl font-bold flex items-center justify-center shadow-2xl transition-all duration-500 ${
+          loading
+            ? "bg-gray-400 text-white"
+            : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:scale-110 hover:shadow-indigo-300/50"
+        }`}
       >
-        {loading ? "Testing..." : "Run Speed Test"}
+        {loading ? (
+          <span className="animate-pulse">Testing...</span>
+        ) : (
+          "Run Test"
+        )}
       </button>
 
-      {speed && (
+      {/* Result Display */}
+      {result && (
         <div
-          className={`mt-10 w-full max-w-lg p-8 rounded-2xl shadow-lg border border-gray-200 backdrop-blur-sm ${feedback.bg}`}
+          className={`mt-14 flex flex-col items-center w-full max-w-4xl rounded-2xl shadow-lg border border-gray-200 p-10 ${feedback?.bg}`}
         >
-          <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
-            Test Results
-          </h2>
+          <div className="flex flex-wrap justify-center gap-8 w-full">
+            <div className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg w-64 transform hover:scale-105 transition-all">
+              <p className="text-lg font-semibold text-blue-700 mb-2">
+                Download Speed
+              </p>
+              <p className="text-4xl font-bold text-blue-600">
+                {result.download.toFixed(2)} Mbps
+              </p>
+            </div>
 
-          <div className="flex flex-col space-y-4 text-lg font-medium">
-            <p className="flex justify-between">
-              <span className="text-gray-700">Download Speed:</span>
-              <span className="font-semibold text-blue-700">
-                {speed.download.toFixed(2)} Mbps
-              </span>
-            </p>
-            <p className="flex justify-between">
-              <span className="text-gray-700">Upload Speed:</span>
-              <span className="font-semibold text-green-700">
-                {speed.upload.toFixed(2)} Mbps
-              </span>
-            </p>
-            <p className="flex justify-between">
-              <span className="text-gray-700">Ping:</span>
-              <span className="font-semibold text-indigo-700">
-                {speed.ping} ms
-              </span>
-            </p>
+            <div className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg w-64 transform hover:scale-105 transition-all">
+              <p className="text-lg font-semibold text-green-700 mb-2">
+                Upload Speed
+              </p>
+              <p className="text-4xl font-bold text-green-600">
+                {result.upload.toFixed(2)} Mbps
+              </p>
+            </div>
+
+            <div className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg w-64 transform hover:scale-105 transition-all">
+              <p className="text-lg font-semibold text-purple-700 mb-2">
+                Ping
+              </p>
+              <p className="text-4xl font-bold text-purple-600">
+                {result.ping} ms
+              </p>
+            </div>
           </div>
 
-          <div className="mt-6 text-center">
+          {/* Speed Feedback Message */}
+          <div className="mt-8 text-center">
             <p
-              className={`text-md font-semibold ${feedback.color} leading-relaxed`}
+              className={`text-lg font-semibold ${feedback?.color} leading-relaxed`}
             >
-              {feedback.text}
+              {feedback?.text}
             </p>
           </div>
         </div>
