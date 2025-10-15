@@ -1,4 +1,13 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  Cell,
+} from "recharts";
 
 export default function Dashboard({ speed }: any) {
   if (!speed) {
@@ -23,19 +32,26 @@ export default function Dashboard({ speed }: any) {
       </h1>
       <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-10 w-full max-w-6xl mx-auto">
         <ResponsiveContainer width="100%" height={450}>
-          <BarChart data={data} margin={{ top: 30, right: 50, left: 20, bottom: 20 }} barSize={150}>
+          <BarChart
+            data={data}
+            margin={{ top: 30, right: 50, left: 20, bottom: 20 }}
+            barSize={150}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis dataKey="name" tick={{ fontSize: 18, fontWeight: 600 }} />
             <YAxis />
             <Tooltip
-              contentStyle={{ backgroundColor: "rgba(255,255,255,0.9)", borderRadius: "10px" }}
+              contentStyle={{
+                backgroundColor: "rgba(255,255,255,0.9)",
+                borderRadius: "10px",
+              }}
             />
             <Bar dataKey="value" radius={[15, 15, 0, 0]}>
               {data.map((entry, index) => (
                 <Cell
                   key={index}
                   fill={entry.color}
-                  className="transition-all duration-300 hover:opacity-80 hover:cursor-pointer"
+                  className="bar-cell transition-all duration-300 hover:opacity-80 hover:cursor-pointer"
                 />
               ))}
             </Bar>
