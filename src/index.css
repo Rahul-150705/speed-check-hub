@@ -69,4 +69,14 @@ All colors MUST be HSL.
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
+  .bar-cell:focus,
+.bar-cell:active {
+  outline: none !important;
+  stroke: none !important;
+}
+.recharts-rectangle:focus {
+  outline: none !important;
+  stroke: none !important;
+}
+
 }
