@@ -3,15 +3,37 @@ import { useState } from "react";
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login data:", formData);
-    alert("Logged in!");
+
+    try {
+      const res = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (res.status === 200) {
+        console.log("Logged in user:", data); // Logs user info
+        localStorage.setItem("username", data.name); // Store name locally
+        setMessage("Login successful!");
+        // Redirect to SpeedTest page
+        window.location.href = "/speedtest";
+      } else {
+        setMessage(data.detail || "Login failed");
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      setMessage("Server error, please try again.");
+    }
   };
 
   return (
@@ -99,6 +121,7 @@ export default function Login() {
           >
             Login
           </button>
+          <p className="text-red-500 mt-2 text-center">{message}</p>
         </form>
       </div>
     </div>
