@@ -1,9 +1,15 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import speedtest
+import mysql.connector
+import bcrypt
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 
+# Allow frontend connection (React usually runs on port 5173 or 3000)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -12,14 +18,49 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/speed")
-def get_speed():
-    try:
-        st = speedtest.Speedtest()
-        st.get_best_server()
-        download = st.download() / 1_000_000
-        upload = st.upload() / 1_000_000
-        ping = st.results.ping
-        return {"download": round(download, 2), "upload": round(upload, 2), "ping": round(ping, 2)}
-    except Exception as e:
-        return {"error": str(e)}
+def get_db():
+    return mysql.connector.connect(
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME"),
+    )
+
+@app.post("/signup")
+def signup(user: dict):
+    name = user.get("name")
+    email = user.get("email")
+    password = user.get("password")
+
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+    existing = cursor.fetchone()
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    hashed_pw = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    cursor.execute("INSERT INTO users (name, email, password) VALUES (%s, %s, %s)", (name, email, hashed_pw))
+    db.commit()
+    db.close()
+    return {"message": "Signup successful"}
+
+@app.post("/login")
+def login(user: dict):
+    email = user.get("email")
+    password = user.get("password")
+
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+    existing = cursor.fetchone()
+    db.close()
+
+    if not existing:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not bcrypt.checkpw(password.encode("utf-8"), existing["password"].encode("utf-8")):
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
+    return {"message": "Login successful", "name": existing["name"]}
+
