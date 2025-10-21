@@ -9,15 +9,18 @@ load_dotenv()
 
 app = FastAPI()
 
-# Allow frontend connection (React usually runs on port 5173 or 3000)
+# Allow frontend connection
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # replace "*" with your frontend URL if needed
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# ------------------------------
+# MySQL connection function
+# ------------------------------
 def get_db():
     return mysql.connector.connect(
         host=os.getenv("DB_HOST", "localhost"),
@@ -26,6 +29,9 @@ def get_db():
         database=os.getenv("DB_NAME", "authdb")
     )
 
+# ------------------------------
+# Signup endpoint
+# ------------------------------
 @app.post("/signup")
 def signup(user: dict):
     name = user.get("name")
@@ -57,7 +63,11 @@ def signup(user: dict):
     db.close()
 
     return {"message": "Signup successful"}
-    @app.post("/login")
+
+# ------------------------------
+# Login endpoint
+# ------------------------------
+@app.post("/login")
 def login(user: dict):
     email = user.get("email")
     password = user.get("password")
@@ -81,4 +91,14 @@ def login(user: dict):
         raise HTTPException(status_code=401, detail="Incorrect password")
 
     return {"message": "Login successful", "name": existing["name"]}
-
+@app.get("/speed")
+def get_speed():
+    try:
+        st = speedtest.Speedtest()
+        st.get_best_server()
+        download = st.download() / 1_000_000
+        upload = st.upload() / 1_000_000
+        ping = st.results.ping
+        return {"download": round(download, 2), "upload": round(upload, 2), "ping": round(ping, 2)}
+    except Exception as e:
+        return {"error": str(e)}
