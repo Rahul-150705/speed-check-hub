@@ -4,6 +4,7 @@ import mysql.connector
 import bcrypt
 import os
 from dotenv import load_dotenv
+import speedtest  # Add this
 
 load_dotenv()
 
@@ -89,16 +90,20 @@ def login(user: dict):
     # Check password
     if not bcrypt.checkpw(password.encode("utf-8"), existing["password"].encode("utf-8")):
         raise HTTPException(status_code=401, detail="Incorrect password")
-        @app.get("/speed")
+
+    return {"message": "Login successful", "name": existing["name"]}
+
+# ------------------------------
+# Speed test endpoint
+# ------------------------------
+@app.get("/speed")
 def get_speed():
     try:
         st = speedtest.Speedtest()
         st.get_best_server()
-        download = st.download() / 1_000_000
+        download = st.download() / 1_000_000  # Convert to Mbps
         upload = st.upload() / 1_000_000
         ping = st.results.ping
         return {"download": round(download, 2), "upload": round(upload, 2), "ping": round(ping, 2)}
     except Exception as e:
         return {"error": str(e)}
-
-    return {"message": "Login successful", "name": existing["name"]}
