@@ -89,9 +89,7 @@ def login(user: dict):
     # Check password
     if not bcrypt.checkpw(password.encode("utf-8"), existing["password"].encode("utf-8")):
         raise HTTPException(status_code=401, detail="Incorrect password")
-
-    return {"message": "Login successful", "name": existing["name"]}
-@app.get("/speed")
+        @app.get("/speed")
 def get_speed():
     try:
         st = speedtest.Speedtest()
@@ -102,3 +100,5 @@ def get_speed():
         return {"download": round(download, 2), "upload": round(upload, 2), "ping": round(ping, 2)}
     except Exception as e:
         return {"error": str(e)}
+
+    return {"message": "Login successful", "name": existing["name"]}
