@@ -3,15 +3,38 @@ import { useState } from "react";
 export default function SignUp() {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("SignUp data:", formData);
-    alert("Signed up!");
+
+    try {
+      const res = await fetch("http://localhost:8000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (res.status === 200) {
+        console.log("User signed up:", formData); // Logs user info
+        setMessage("Signup successful! Redirecting to login...");
+        // Redirect to login page after 1-2 seconds
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1500);
+      } else {
+        setMessage(data.detail || "Signup failed");
+      }
+    } catch (error) {
+      console.error("Error signing up:", error);
+      setMessage("Server error, please try again.");
+    }
   };
 
   return (
@@ -113,6 +136,7 @@ export default function SignUp() {
           >
             Sign Up
           </button>
+          <p className="text-red-500 mt-2 text-center">{message}</p>
         </form>
       </div>
     </div>
